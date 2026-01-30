@@ -1,4 +1,3 @@
-// Simplex/Perlin noise library (public domain)
 var noise = {};
 (function() {
     var module = noise;
@@ -10,31 +9,33 @@ var noise = {};
         return this.x * x + this.y * y;
     };
 
-    var grad3 = [new Grad(1,1,0),new Grad(-1,1,0),new Grad(1,-1,0),new Grad(-1,-1,0),
-                 new Grad(1,0,1),new Grad(-1,0,1),new Grad(1,0,-1),new Grad(-1,0,-1),
-                 new Grad(0,1,1),new Grad(0,-1,1),new Grad(0,1,-1),new Grad(0,-1,-1)];
+    var grad3 = [
+        new Grad(1,1,0), new Grad(-1,1,0), new Grad(1,-1,0), new Grad(-1,-1,0),
+        new Grad(1,0,1), new Grad(-1,0,1), new Grad(1,0,-1), new Grad(-1,0,-1),
+        new Grad(0,1,1), new Grad(0,-1,1), new Grad(0,1,-1), new Grad(0,-1,-1)
+    ];
 
     var p = [];
-    for (var i=0; i<256; i++) {
-        p[i] = Math.floor(Math.random()*256);
+    for (var i = 0; i < 256; i++) {
+        p[i] = Math.floor(Math.random() * 256);
     }
 
     var perm = [];
-    for (var i=0; i<512; i++) {
+    for (var i = 0; i < 512; i++) {
         perm[i] = p[i & 255];
     }
 
     module.seed = function(seed) {
-        if(seed > 0 && seed < 1) seed *= 65536;
+        if (seed > 0 && seed < 1) seed *= 65536;
         seed = Math.floor(seed);
-        if(seed < 256) seed |= seed << 8;
+        if (seed < 256) seed |= seed << 8;
 
         for (var i = 0; i < 256; i++) {
             var v;
             if (i & 1) {
                 v = p[i] ^ (seed & 255);
             } else {
-                v = p[i] ^ ((seed>>8) & 255);
+                v = p[i] ^ ((seed >> 8) & 255);
             }
             perm[i] = perm[i + 256] = v;
         }
@@ -63,6 +64,6 @@ var noise = {};
         return lerp(v, lerp(u, gradAA, gradBA), lerp(u, gradAB, gradBB));
     };
 
-    function fade(t) { return t*t*t*(t*(t*6-15)+10); }
+    function fade(t) { return t * t * t * (t * (t * 6 - 15) + 10); }
     function lerp(t, a, b) { return a + t * (b - a); }
 })();
